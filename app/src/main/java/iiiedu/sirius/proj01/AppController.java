@@ -5,18 +5,20 @@ import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 import java.util.List;
 
 import iiiedu.sirius.proj01.model.BillVO;
 import iiiedu.sirius.proj01.model.LoginResultVO;
+import iiiedu.sirius.proj01.model.LruBitmapCache;
 import iiiedu.sirius.proj01.model.MealVO;
 
 public class AppController extends Application {
 
     public static final String TAG = AppController.class.getSimpleName();
-    public static final String SERVERIP = "http://192.168.23.135:8081";
+    public static final String SERVERIP = "http://192.168.23.147:8081";
 
     private MealVO[] meallist = null;
 
@@ -27,6 +29,9 @@ public class AppController extends Application {
     private boolean billstatus = true;
 
     private RequestQueue mRequestQueue;
+
+    private ImageLoader mImageLoader;
+
 
     private static AppController mInstance;
 
@@ -64,6 +69,15 @@ public class AppController extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
+    }
+
+    public ImageLoader getImageLoader() {
+        getRequestQueue();
+        if (mImageLoader == null) {
+            mImageLoader = new ImageLoader(this.mRequestQueue,
+                    new LruBitmapCache());
+        }
+        return this.mImageLoader;
     }
 
     public MealVO[] getMeallist(){

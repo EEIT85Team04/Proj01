@@ -9,12 +9,9 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
-
+import com.wefika.horizontalpicker.HorizontalPicker;
 import java.util.ArrayList;
 import java.util.List;
-
-import iiiedu.sirius.proj01.AppController;
-import iiiedu.sirius.proj01.R;
 import iiiedu.sirius.proj01.model.DetailMealVO;
 import iiiedu.sirius.proj01.model.MealMenuVO;
 
@@ -44,15 +41,27 @@ public class MyMealExpandableAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition,int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         final int mGroupPosition = groupPosition;
-        DetailMealVO child = childtems.get(mGroupPosition).getDetailmeals().get(childPosition);
+        final DetailMealVO child = childtems.get(mGroupPosition).getDetailmeals().get(childPosition);
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.mealitem, null);
 
             childViewHolder = new ChildViewHolder();
             childViewHolder.mealitemname = (TextView) convertView.findViewById(R.id.mealitemname);
-            childViewHolder.mealiteminput = (EditText) convertView.findViewById(R.id.mealiteminput);
-            childViewHolder.mealiteminput.addTextChangedListener(new ChildTextChanged(groupPosition,childPosition));
+            childViewHolder.picker = (HorizontalPicker) convertView.findViewById(R.id.picker);
+            childViewHolder.picker.setOnItemSelectedListener(new HorizontalPicker.OnItemSelected(){
+                @Override
+                public void onItemSelected(int index) {
+                    Log.i("picker","" + index);
+                    child.getItemVO().setMealcount(index);
+                    int total = 0;
+                    for(DetailMealVO child : childtems.get(mGroupPosition).getDetailmeals()){
+                        total += child.getItemVO().getMealcount();
+                    }
+                    childtems.get(mGroupPosition).setMealitemtotal(total);
+                    notifyDataSetChanged();
+                }
+            });
 
             convertView.setTag(childViewHolder);
 
@@ -64,44 +73,10 @@ public class MyMealExpandableAdapter extends BaseExpandableListAdapter {
         int oldmealcount = child.getItemVO().getMealcount();    //將之前輸入的值放入
 
         if(oldmealcount != 0 ){
-            childViewHolder.mealiteminput.setTag(child);
-            childViewHolder.mealiteminput.setText("" + oldmealcount);
+            childViewHolder.picker.setTag(child);
+            childViewHolder.picker.setSelectedItem(oldmealcount);
         }
         return convertView;
-    }
-
-
-    class ChildTextChanged implements TextWatcher {
-        private int groupPosition;
-        private int childPosition;
-
-        ChildTextChanged(int groupPosition, int childPosition) {
-            this.groupPosition = groupPosition;
-            this.childPosition = childPosition;
-        }
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String input = s.toString();
-            int newitemcount;
-            if(input == "" || input.isEmpty()){
-                newitemcount = 0;
-            }else {
-                newitemcount = Integer.parseInt(input);
-            }
-            childtems.get(groupPosition).getDetailmeals().get(childPosition).getItemVO().setMealcount(newitemcount);
-            int total = 0;
-            for(DetailMealVO child : childtems.get(groupPosition).getDetailmeals()){
-                total += child.getItemVO().getMealcount();
-            }
-            childtems.get(groupPosition).setMealitemtotal(total);
-
-            // 注意，一定要通知 ExpandableListView 資料已經改變，ExpandableListView 會重新產生畫面
-            notifyDataSetChanged();
-        }
-        @Override
-        public void afterTextChanged(Editable s) {}
     }
 
     @Override
@@ -185,6 +160,6 @@ public class MyMealExpandableAdapter extends BaseExpandableListAdapter {
 
     public final class ChildViewHolder {
         TextView mealitemname;
-        EditText mealiteminput;
+        HorizontalPicker picker;
     }
 }

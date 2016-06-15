@@ -43,12 +43,14 @@ public class Activity_login extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(account.getText().toString() != "")
-                    if(password.getText().toString() != "")
-                        if(peoplenumber.getText().toString() != "")
-                            if(site.getText().toString() != "")
-                                if(seat.getText().toString() != "")
+                if(!account.getText().toString().trim().isEmpty())
+                    if(!password.getText().toString().trim().isEmpty())
+                        if(!peoplenumber.getText().toString().trim().isEmpty())
+                            if(!site.getText().toString().trim().isEmpty())
+                                if(!seat.getText().toString().trim().isEmpty())
                                     login();
+                else
+                    Toast.makeText(Activity_login.this,R.string.loginempty,Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -77,6 +79,7 @@ public class Activity_login extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(Activity_login.this,R.string.error,Toast.LENGTH_SHORT).show();
                 Log.e("ERROR", error.getMessage(), error);
             }
         });

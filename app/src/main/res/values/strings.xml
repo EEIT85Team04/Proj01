@@ -23,6 +23,7 @@
     <string name="seat_name_msg">請輸入桌號</string>
     <string name="peoplenumber">人數：</string>
     <string name="peoplenumber_msg">請輸入人數</string>
+    <string name="loginempty">欄位請勿空白</string>
     <string name="login_btn_lb1">登入</string>
     <string name="orderdatail_quantity">數量：</string>
     <string name="item_quantity">請輸入數量：</string>
@@ -31,4 +32,19 @@
     <string name="simple">[單點]</string>
     <string name="set">[套餐]</string>
     <string name="billtotal">價格：</string>
+    <string name="itemcontent">介紹：</string>
+
+
+    <string-array name="values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
 </resources>
